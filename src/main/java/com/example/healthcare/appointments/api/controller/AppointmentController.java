@@ -11,16 +11,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/appointments")
 public class AppointmentController {
 
     @Autowired
-    private AppointmentService service;
+    private AppointmentService appointmentService;
 
-    // Get a list of all appointments
-    @GetMapping("/appointments")
+
+    // Add a new appointment
+    @PostMapping
+    public ResponseEntity<Appointment> addAppointment(@RequestBody Appointment appointment) {
+        return new ResponseEntity<>(appointmentService.saveAppointment(appointment), HttpStatus.CREATED);
+    }
+
+    // Get the list of all appointments
+    @GetMapping
     public ResponseEntity<List<Appointment>> getAllAppointments() {
-        List<Appointment> appointments = service.getAllAppointments();
+        List<Appointment> appointments = appointmentService.getAllAppointments();
 
         if (appointments.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -30,37 +37,32 @@ public class AppointmentController {
     }
 
     // Get an appointment by ID
-    @GetMapping("/appointments/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getAppointment(@PathVariable Long id) {
         try {
-            return new ResponseEntity<>(service.getAppointment(id), HttpStatus.OK);
+            return new ResponseEntity<>(appointmentService.getAppointmentById(id), HttpStatus.OK);
         } catch (AppointmentNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
-    // Add a new appointment
-    @PostMapping("/appointments")
-    public ResponseEntity<Appointment> addAppointment(@RequestBody Appointment appointment) {
-
-        return new ResponseEntity<>(service.saveAppointment(appointment), HttpStatus.CREATED);
-    }
-
     // Update an existing appointment
-    @PutMapping("/appointments")
+    @PutMapping
     public ResponseEntity<?> updateAppointment(@RequestBody Appointment appointment) {
         try {
-            return new ResponseEntity<>(service.updateAppointment(appointment), HttpStatus.OK);
+            Appointment updatedAppointment = appointmentService.updateAppointment(appointment);
+            return new ResponseEntity<>(updatedAppointment, HttpStatus.OK);
         } catch (AppointmentNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     // Delete an appointment by ID
-    @DeleteMapping("/appointments/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAppointment(@PathVariable Long id) {
         try {
-            List<Appointment> appointments = service.deleteAppointment(id);
+            // Get the list of remaining appointments.
+            List<Appointment> appointments = appointmentService.deleteAppointmentById(id);
 
             if (appointments.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);

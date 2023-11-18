@@ -13,21 +13,21 @@ import java.util.List;
 public class PatientServiceImpl implements PatientService {
 
     @Autowired
-    private PatientRepository repository;
+    private PatientRepository patientRepository;
 
     @Override
     public Patient savePatient(Patient patient) {
-        return repository.save(patient);
+        return patientRepository.save(patient);
     }
 
     @Override
     public List<Patient> getAllPatients() {
-        return repository.findAll();
+        return patientRepository.findAll();
     }
 
     @Override
-    public Patient getPatient(Long id) {
-        return repository.findById(id).orElseThrow(
+    public Patient getPatientById(Long id) {
+        return patientRepository.findById(id).orElseThrow(
                 () -> new PatientNotFoundException(String.format("There is no patient here with ID %d.", id))
         );
     }
@@ -35,14 +35,16 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient updatePatient(Patient patient) {
         // Before updating, checking whether the patient exists in the database.
-        getPatient(patient.getPatientID());
+        getPatientById(patient.getPatientID());
 
-        return repository.save(patient);
+        return patientRepository.save(patient);
     }
 
     @Override
-    public List<Patient> deletePatient(Long id) {
-        repository.delete(getPatient(id));
-        return repository.findAll();
+    public List<Patient> deletePatientById(Long id) {
+        patientRepository.delete(getPatientById(id));
+
+        // Returns the list of remaining patients.
+        return patientRepository.findAll();
     }
 }

@@ -31,11 +31,7 @@ public class Doctor {
     @Column(length = 100, nullable = false)
     private String specialization;
 
-    @Column(name = "phone_number", length = 15, nullable = false, unique = true)
-    private String phoneNumber;
-
-    @Column(length = 70, unique = true)
-    private String email;
+    private ContactInformation contactInformation;
 
     @JsonIgnore
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.REMOVE)

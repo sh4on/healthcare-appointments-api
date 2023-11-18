@@ -10,11 +10,11 @@ public interface DoctorService {
 
     List<Doctor> getAllDoctors();
 
-    Doctor getDoctor(Long id);
+    Doctor getDoctorById(Long id);
 
     Doctor updateDoctor(Doctor doctor);
 
-    List<Doctor> deleteDoctor(Long id);
+    List<Doctor> deleteDoctorById(Long id);
 
     List<Doctor> getAllDoctorsContaining(String specialization);
 }

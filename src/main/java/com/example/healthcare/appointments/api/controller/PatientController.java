@@ -11,14 +11,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/patients")
 public class PatientController {
 
     @Autowired
     private PatientService service;
 
+    // Add a new patient
+    @PostMapping
+    public ResponseEntity<Patient> addPatient(@RequestBody Patient patient) {
+        return new ResponseEntity<>(service.savePatient(patient), HttpStatus.CREATED);
+    }
+
     // Get a list of all patients
-    @GetMapping("/patients")
+    @GetMapping
     public ResponseEntity<List<Patient>> getAllPatients() {
         List<Patient> patients = service.getAllPatients();
 
@@ -30,36 +36,32 @@ public class PatientController {
     }
 
     // Get a patient by ID
-    @GetMapping("/patients/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getPatient(@PathVariable Long id) {
         try {
-            return new ResponseEntity<>(service.getPatient(id), HttpStatus.OK);
+            return new ResponseEntity<>(service.getPatientById(id), HttpStatus.OK);
         } catch (PatientNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
-    // Add a new patient
-    @PostMapping("/patients")
-    public ResponseEntity<Patient> addPatient(@RequestBody Patient patient) {
-        return new ResponseEntity<>(service.savePatient(patient), HttpStatus.CREATED);
-    }
-
     // Update an existing patient
-    @PutMapping("/patients")
+    @PutMapping
     public ResponseEntity<?> updatePatient(@RequestBody Patient patient) {
         try {
-            return new ResponseEntity<>(service.updatePatient(patient), HttpStatus.OK);
+            Patient updatedPatient = service.updatePatient(patient);
+            return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
         } catch (PatientNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     // Delete a patient by ID
-    @DeleteMapping("/patients/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePatient(@PathVariable Long id) {
         try {
-            List<Patient> patients = service.deletePatient(id);
+            // Get the list of remaining patients.
+            List<Patient> patients = service.deletePatientById(id);
 
             if (patients.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);

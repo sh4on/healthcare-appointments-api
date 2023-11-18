@@ -10,9 +10,9 @@ public interface AppointmentService {
 
     List<Appointment> getAllAppointments();
 
-    Appointment getAppointment(Long id);
+    Appointment getAppointmentById(Long id);
 
     Appointment updateAppointment(Appointment appointment);
 
-    List<Appointment> deleteAppointment(Long id);
+    List<Appointment> deleteAppointmentById(Long id);
 }

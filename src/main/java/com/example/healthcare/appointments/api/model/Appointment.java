@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.sql.Date;
 
 @Setter
 @Getter
@@ -23,7 +23,7 @@ public class Appointment {
 
     @Column(name = "appointment_date", nullable = false)
     @Temporal(TemporalType.DATE)
-    private Date date;
+    private Date appointmentDate;
 
     @Column(length = 250, nullable = false)
     private String purpose;

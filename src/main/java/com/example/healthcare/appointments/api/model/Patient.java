@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.sql.Date;
 
 @Setter
 @Getter
@@ -32,11 +32,7 @@ public class Patient {
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    @Column(name = "phone_number", length = 15, nullable = false, unique = true)
-    private String phoneNumber;
-
-    @Column(length = 70, unique = true)
-    private String email;
+    private ContactInformation contactInformation;
 
     @JsonIgnore
     @OneToOne(mappedBy = "patient", cascade = CascadeType.REMOVE)

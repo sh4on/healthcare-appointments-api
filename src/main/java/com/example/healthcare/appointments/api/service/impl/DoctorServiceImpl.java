@@ -13,21 +13,26 @@ import java.util.List;
 public class DoctorServiceImpl implements DoctorService {
 
     @Autowired
-    private DoctorRepository repository;
+    private DoctorRepository doctorRepository;
 
     @Override
     public Doctor saveDoctor(Doctor doctor) {
-        return repository.save(doctor);
+        return doctorRepository.save(doctor);
     }
 
     @Override
     public List<Doctor> getAllDoctors() {
-        return repository.findAll();
+        return doctorRepository.findAll();
     }
 
     @Override
-    public Doctor getDoctor(Long id) {
-        return repository.findById(id).orElseThrow(
+    public List<Doctor> getAllDoctorsContaining(String specialization) {
+        return doctorRepository.findBySpecializationContaining(specialization);
+    }
+
+    @Override
+    public Doctor getDoctorById(Long id) {
+        return doctorRepository.findById(id).orElseThrow(
                 () -> new DoctorNotFoundException(String.format("There is no doctor here with ID %d.", id))
         );
     }
@@ -35,19 +40,16 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public Doctor updateDoctor(Doctor doctor) {
         // Before updating, checking whether the doctor exists in the database.
-        getDoctor(doctor.getDoctorID());
+        getDoctorById(doctor.getDoctorID());
 
-        return repository.save(doctor);
+        return doctorRepository.save(doctor);
     }
 
     @Override
-    public List<Doctor> deleteDoctor(Long id) {
-        repository.delete(getDoctor(id));
-        return repository.findAll();
-    }
+    public List<Doctor> deleteDoctorById(Long id) {
+        doctorRepository.delete(getDoctorById(id));
 
-    @Override
-    public List<Doctor> getAllDoctorsContaining(String specialization) {
-        return repository.findBySpecializationContaining(specialization);
+        // Returns the list of remaining doctors.
+        return doctorRepository.findAll();
     }
 }
