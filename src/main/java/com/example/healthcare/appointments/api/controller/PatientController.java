@@ -15,18 +15,18 @@ import java.util.List;
 public class PatientController {
 
     @Autowired
-    private PatientService service;
+    private PatientService patientService;
 
     // Add a new patient
     @PostMapping
     public ResponseEntity<Patient> addPatient(@RequestBody Patient patient) {
-        return new ResponseEntity<>(service.savePatient(patient), HttpStatus.CREATED);
+        return new ResponseEntity<>(patientService.savePatient(patient), HttpStatus.CREATED);
     }
 
     // Get a list of all patients
     @GetMapping
     public ResponseEntity<List<Patient>> getAllPatients() {
-        List<Patient> patients = service.getAllPatients();
+        List<Patient> patients = patientService.getAllPatients();
 
         if (patients.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -39,7 +39,7 @@ public class PatientController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getPatient(@PathVariable Long id) {
         try {
-            return new ResponseEntity<>(service.getPatientById(id), HttpStatus.OK);
+            return new ResponseEntity<>(patientService.getPatientById(id), HttpStatus.OK);
         } catch (PatientNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -49,7 +49,7 @@ public class PatientController {
     @PutMapping
     public ResponseEntity<?> updatePatient(@RequestBody Patient patient) {
         try {
-            Patient updatedPatient = service.updatePatient(patient);
+            Patient updatedPatient = patientService.updatePatient(patient);
             return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
         } catch (PatientNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -61,7 +61,7 @@ public class PatientController {
     public ResponseEntity<?> deletePatient(@PathVariable Long id) {
         try {
             // Get the list of remaining patients.
-            List<Patient> patients = service.deletePatientById(id);
+            List<Patient> patients = patientService.deletePatientById(id);
 
             if (patients.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
